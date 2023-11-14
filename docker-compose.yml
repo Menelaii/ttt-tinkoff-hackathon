@@ -5,7 +5,10 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-#    environment:
+    environment:
+      - SESSION_ID=
+      - BOT_URL=
+      - MEDIATOR_URL=
     deploy:
       resources:
         limits:
