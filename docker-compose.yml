@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - SESSION_ID=
+      - BOT_URL=
+      - MEDIATOR_URL=
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
