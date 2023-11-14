@@ -13,8 +13,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ru.ttttinkoffhackathon.configuration.BotConfig;
 import ru.ttttinkoffhackathon.exceptions.RegistrationException;
 import ru.ttttinkoffhackathon.models.Figure;
-import ru.ttttinkoffhackathon.models.registration.RegistrationRequest;
-import ru.ttttinkoffhackathon.models.registration.RegistrationResponse;
+import ru.ttttinkoffhackathon.models.registration.RegistrationRequestDTO;
+import ru.ttttinkoffhackathon.models.registration.RegistrationResponseDTO;
 import ru.ttttinkoffhackathon.services.RegistrationService;
 
 import java.util.Map;
@@ -45,16 +45,16 @@ public class RegistrationServiceImpl implements RegistrationService {
                 ))
                 .encode()
                 .toUri();
-        final var body = RegistrationRequest.builder()
+        final var body = RegistrationRequestDTO.builder()
                 .botUrl(botUrl)
                 .botId(botId)
                 .password(botConfig.botPassword())
                 .build();
-        ResponseEntity<RegistrationResponse> response = restTemplate.exchange(
+        ResponseEntity<RegistrationResponseDTO> response = restTemplate.exchange(
                 uri,
                 HttpMethod.POST,
                 new HttpEntity<>(body),
-                RegistrationResponse.class
+                RegistrationResponseDTO.class
         );
 
         log.debug("Ответ получен {}", response);

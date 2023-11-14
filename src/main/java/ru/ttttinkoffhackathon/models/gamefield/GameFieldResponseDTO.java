@@ -1,4 +1,4 @@
-package ru.ttttinkoffhackathon.models.registration;
+package ru.ttttinkoffhackathon.models.gamefield;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,8 +6,6 @@ import lombok.Builder;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record RegistrationRequest(
-        String botUrl,
-        String botId,
-        String password
-) {}
+public record GameFieldResponseDTO(
+        String gameField
+) { }

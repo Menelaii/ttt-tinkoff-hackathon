@@ -4,6 +4,6 @@ import lombok.Builder;
 import ru.ttttinkoffhackathon.models.Figure;
 
 @Builder
-public record RegistrationResponse(
+public record RegistrationResponseDTO(
         Figure figure
 ) {}
