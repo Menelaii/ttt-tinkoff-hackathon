@@ -17,10 +17,10 @@ public class WinCheckUtil {
 
     private static boolean checkForWinHorizontally(String gameField, Figure figure) {
         int count = 0;
-        int idx = 0;
+        int idx;
         for (int row = 0; row < FIELD_SIZE; row++) {
             for (int col = 0; col < FIELD_SIZE; col++) {
-                idx = Util.coordinatesToIndex(row, col);
+                idx = MatrixStringUtil.coordinatesToIndex(row, col);
                 if (gameField.charAt(idx) == figure.getName().charAt(0)) {
                     count++;
                     if (count == 5) return true;
@@ -38,10 +38,10 @@ public class WinCheckUtil {
 
     private static boolean checkForWinVertically(String gameField, Figure figure) {
         int count = 0;
-        int idx = 0;
+        int idx;
         for (int col = 0; col < FIELD_SIZE; col++) {
             for (int row = 0; row < FIELD_SIZE; row++) {
-                idx = Util.coordinatesToIndex(row, col);
+                idx = MatrixStringUtil.coordinatesToIndex(row, col);
                 if (gameField.charAt(idx) == figure.getName().charAt(0)) {
                     count++;
                     if (count == 5) return true;
@@ -62,7 +62,7 @@ public class WinCheckUtil {
             for (int col = 0; col <= FIELD_SIZE - FIGURES_FOR_WIN; col++) {
                 int count = 0;
                 for (int i = 0; i < FIGURES_FOR_WIN; i++) {
-                    if (gameField.charAt(Util.coordinatesToIndex(row + i, col + i)) == figureSymbol) {
+                    if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i, col + i)) == figureSymbol) {
                         if (++count == FIGURES_FOR_WIN) {
                             return true;
                         }
@@ -77,7 +77,7 @@ public class WinCheckUtil {
             for (int col = FIGURES_FOR_WIN - 1; col < FIELD_SIZE; col++) {
                 int count = 0;
                 for (int i = 0; i < FIGURES_FOR_WIN; i++) {
-                    if (gameField.charAt(Util.coordinatesToIndex(row + i, col - i)) == figureSymbol) {
+                    if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i, col - i)) == figureSymbol) {
                         if (++count == FIGURES_FOR_WIN) {
                             return true;
                         }

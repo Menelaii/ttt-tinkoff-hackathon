@@ -2,7 +2,7 @@ package ru.ttttinkoffhackathon.util;
 
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
 
-public class Util {
+public class MatrixStringUtil {
 
     public static int indexToRow(int index) {
         return index / FIELD_SIZE;

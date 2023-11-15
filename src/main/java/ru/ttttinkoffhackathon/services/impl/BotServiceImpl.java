@@ -5,8 +5,9 @@ import ru.ttttinkoffhackathon.configuration.BotConfig;
 import ru.ttttinkoffhackathon.models.Figure;
 import ru.ttttinkoffhackathon.services.BotService;
 import ru.ttttinkoffhackathon.services.RegistrationService;
-import ru.ttttinkoffhackathon.util.PossibleMovesUtil;
-import ru.ttttinkoffhackathon.util.Util;
+import ru.ttttinkoffhackathon.util.MatrixStringUtil;
+import ru.ttttinkoffhackathon.util.MinimaxUtil;
+import ru.ttttinkoffhackathon.util.PossibleMovesGeneratorUtil;
 
 import java.util.List;
 
@@ -31,20 +32,24 @@ public class BotServiceImpl implements BotService {
     // записывать уже просчитанные ходы и если не укладываемся в секунду возвращать лучший что успели просчитать
     @Override
     public String makeTurnByGameField(String gameField) {
-        List<String> possibleMoves = PossibleMovesUtil.generatePossibleMoves(gameField, figure);
+        List<String> possibleMoves = PossibleMovesGeneratorUtil.generatePossibleMoves(gameField, figure);
+        if (possibleMoves.isEmpty() && figure == Figure.CROSS) return makeDefaultFirstTurn(gameField);
+        else return makeMinimaxTurn(possibleMoves,5);
+    }
 
-        if (possibleMoves.isEmpty() && figure == Figure.CROSS) {
-            int centerIndex = Util.coordinatesToIndex(FIELD_SIZE / 2, FIELD_SIZE / 2);
-            StringBuilder newGameField = new StringBuilder(gameField);
-            newGameField.setCharAt(centerIndex, figure.getName().charAt(0));
-            possibleMoves.add(newGameField.toString());
-        }
+    public String makeDefaultFirstTurn(String gameField) {
+        int centerIndex = MatrixStringUtil.coordinatesToIndex(FIELD_SIZE / 2, FIELD_SIZE / 2);
+        StringBuilder newGameField = new StringBuilder(gameField);
+        newGameField.setCharAt(centerIndex, figure.getName().charAt(0));
+        return newGameField.toString();
+    }
 
+    private String makeMinimaxTurn(List<String> possibleMoves, int depth) {
         int bestScore = Integer.MIN_VALUE;
         String bestMove = null;
 
         for (String move : possibleMoves) {
-            int score = Minimax.minimax(move, figure, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+            int score = MinimaxUtil.minimax(move, figure, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
