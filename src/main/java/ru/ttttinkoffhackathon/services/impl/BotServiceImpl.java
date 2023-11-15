@@ -30,11 +30,12 @@ public class BotServiceImpl implements BotService {
     // если можно проиграть/выиграть через 1 ход зачем просчитывать что будет через 5
     // заготовки??
     // записывать уже просчитанные ходы и если не укладываемся в секунду возвращать лучший что успели просчитать
+    // как регулировать depth??
     @Override
     public String makeTurnByGameField(String gameField) {
         List<String> possibleMoves = PossibleMovesGeneratorUtil.generatePossibleMoves(gameField, figure);
         if (possibleMoves.isEmpty() && figure == Figure.CROSS) return makeDefaultFirstTurn(gameField);
-        else return makeMinimaxTurn(possibleMoves,5);
+        else return makeMinimaxTurn(possibleMoves,3);
     }
 
     public String makeDefaultFirstTurn(String gameField) {
