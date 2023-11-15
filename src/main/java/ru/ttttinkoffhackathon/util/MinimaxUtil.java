@@ -1,25 +1,17 @@
-package ru.ttttinkoffhackathon.services.impl;
+package ru.ttttinkoffhackathon.util;
 
 import ru.ttttinkoffhackathon.models.Figure;
-import ru.ttttinkoffhackathon.util.PossibleMovesUtil;
-import ru.ttttinkoffhackathon.util.WinCheckUtil;
 
 import java.util.List;
 
-/**
- * Minimax - алгоритм поиска решения в играх с двумя игроками,
- * где каждый игрок пытается минимизировать максимально возможный выигрыш противника.
- * То есть, каждый игрок пытается выбрать наилучший ход для себя, предполагая,
- * что противник также будет выбирать наилучший ход для себя.
- */
-public class Minimax {
+public class MinimaxUtil {
 
     public static int minimax(String gameField, Figure ourFigure, int depth, int alpha, int beta, boolean isMaximizing) {
         if (depth == 0 || isGameOver(gameField)) {
             return evaluate(gameField, ourFigure);
         }
 
-        List<String> possibleMoves = PossibleMovesUtil.generatePossibleMoves(
+        List<String> possibleMoves = PossibleMovesGeneratorUtil.generatePossibleMoves(
                 gameField,
                 isMaximizing ? ourFigure : Figure.getOppositeFigure(ourFigure)
         );

@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
 
-public class PossibleMovesUtil {
+public class PossibleMovesGeneratorUtil {
 
     public static List<String> generatePossibleMoves(String gameField, Figure figure) {
         List<String> possibleMoves = new ArrayList<>();
@@ -34,8 +34,8 @@ public class PossibleMovesUtil {
     }
 
     private static List<Integer> getNeighbourIndices(int index) {
-        int row = Util.indexToRow(index);
-        int col = Util.indexToCol(index);
+        int row = MatrixStringUtil.indexToRow(index);
+        int col = MatrixStringUtil.indexToCol(index);
 
         List<Integer> neighbours = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class PossibleMovesUtil {
             int newCol = col + direction[1];
 
             if (newRow >= 0 && newRow < FIELD_SIZE && newCol >= 0 && newCol < FIELD_SIZE) {
-                neighbours.add(Util.coordinatesToIndex(newRow, newCol));
+                neighbours.add(MatrixStringUtil.coordinatesToIndex(newRow, newCol));
             }
         }
 
