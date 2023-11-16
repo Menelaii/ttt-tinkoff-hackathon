@@ -1,5 +1,6 @@
 package ru.ttttinkoffhackathon.services.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ttttinkoffhackathon.configuration.BotConfig;
 import ru.ttttinkoffhackathon.models.Figure;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
 
+@Slf4j
 @Service
 public class BotServiceImpl implements BotService {
     private final Figure figure;
@@ -25,6 +27,8 @@ public class BotServiceImpl implements BotService {
 
     //todo если не хватает ресурсов ...
     // регулировать depth относительно выставленных подряд фигур
+    //todo подстраховка по времени
+    // сколько мс можно выделить на алгоритм??
     @Override
     public String makeTurnByGameField(String gameField) {
         FilledCellsTrackerUtil.updateField(gameField);

@@ -59,11 +59,10 @@ public class MinimaxUtil {
         boolean theyWon = WinCheckUtil.checkForWin(gameField, opponentFigure);
 
         int score;
-
         if (weWon) {
-            score = 10 - depth;
+            score = 10 + depth;
         } else if (theyWon) {
-            score = -10 + depth;
+            score = -10 - depth;
         } else {
             score = 0;
         }
