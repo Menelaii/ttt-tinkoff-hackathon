@@ -2,6 +2,9 @@ package ru.ttttinkoffhackathon.util;
 
 import ru.ttttinkoffhackathon.models.Figure;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
 import static ru.ttttinkoffhackathon.util.Constants.FIGURES_FOR_WIN;
 
@@ -9,51 +12,55 @@ import static ru.ttttinkoffhackathon.util.Constants.FIGURES_FOR_WIN;
 // поставили х в точку (row, col) значит проверяем только для этой точки
 public class WinCheckUtil {
 
+    private static final Map<String, Boolean> cacheX = new HashMap<>();
+    private static final Map<String, Boolean> cacheO = new HashMap<>();
+
     public static boolean checkForWin(String gameField, Figure figure) {
-        return checkForWinHorizontally(gameField, figure) ||
-                checkForWinVertically(gameField, figure) ||
-                checkForWinDiagonally(gameField, figure.getName().charAt(0));
+        Map<String, Boolean> cache = (figure == Figure.CROSS) ? cacheX : cacheO;
+
+        if (cache.containsKey(gameField)) {
+            return cache.get(gameField);
+        }
+
+        char figureSymbol = figure.getName().charAt(0);
+        boolean result = checkForWinHorizontally(gameField, figureSymbol) ||
+                checkForWinVertically(gameField, figureSymbol) ||
+                checkForWinDiagonally(gameField, figureSymbol);
+
+        cache.put(gameField, result);
+
+        return result;
     }
 
-    private static boolean checkForWinHorizontally(String gameField, Figure figure) {
-        int count = 0;
-        int idx;
+    private static boolean checkForWinHorizontally(String gameField, char figure) {
+        int count;
         for (int row = 0; row < FIELD_SIZE; row++) {
-            for (int col = 0; col < FIELD_SIZE; col++) {
-                idx = MatrixStringUtil.coordinatesToIndex(row, col);
-                if (gameField.charAt(idx) == figure.getName().charAt(0)) {
+            count = 0;
+            for (int col = 0; col <= FIELD_SIZE - FIGURES_FOR_WIN; col++) {
+                if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row, col)) == figure) {
                     count++;
-                    if (count == 5) return true;
+                    if (count == FIGURES_FOR_WIN) return true;
                 } else {
                     count = 0;
-                    if (isOutOfSpace(col + 1)) {
-                        break;
-                    }
                 }
             }
         }
-
         return false;
     }
 
-    private static boolean checkForWinVertically(String gameField, Figure figure) {
-        int count = 0;
-        int idx;
+    private static boolean checkForWinVertically(String gameField, char figure) {
+        int count;
         for (int col = 0; col < FIELD_SIZE; col++) {
-            for (int row = 0; row < FIELD_SIZE; row++) {
-                idx = MatrixStringUtil.coordinatesToIndex(row, col);
-                if (gameField.charAt(idx) == figure.getName().charAt(0)) {
+            count = 0;
+            for (int row = 0; row <= FIELD_SIZE - FIGURES_FOR_WIN; row++) {
+                if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row, col)) == figure) {
                     count++;
-                    if (count == 5) return true;
+                    if (count == FIGURES_FOR_WIN) return true;
                 } else {
                     count = 0;
-                    if (isOutOfSpace(row + 1)) {
-                        break;
-                    }
                 }
             }
         }
-
         return false;
     }
 
@@ -89,9 +96,5 @@ public class WinCheckUtil {
         }
 
         return false;
-    }
-
-    private static boolean isOutOfSpace(int idx) {
-        return FIELD_SIZE - idx < FIGURES_FOR_WIN;
     }
 }
