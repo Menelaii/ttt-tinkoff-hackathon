@@ -8,8 +8,6 @@ import java.util.Map;
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
 import static ru.ttttinkoffhackathon.util.Constants.FIGURES_FOR_WIN;
 
-//todo оптимизация: попробовать проверять только область изменения
-// поставили х в точку (row, col) значит проверяем только для этой точки
 public class WinCheckUtil {
 
     private static final Map<String, Boolean> cacheX = new HashMap<>();

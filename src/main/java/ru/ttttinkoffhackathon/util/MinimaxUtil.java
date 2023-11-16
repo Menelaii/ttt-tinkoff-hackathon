@@ -11,6 +11,7 @@ public class MinimaxUtil {
             return evaluate(gameField, ourFigure);
         }
 
+        FilledCellsTrackerUtil.updateField(gameField);
         List<String> possibleMoves = PossibleMovesGeneratorUtil.generatePossibleMoves(
                 gameField,
                 isMaximizing ? ourFigure : Figure.getOppositeFigure(ourFigure)

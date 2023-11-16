@@ -15,17 +15,15 @@ public class PossibleMovesGeneratorUtil {
         List<String> possibleMoves = new ArrayList<>();
         Set<Integer> checkedIndices = new HashSet<>();
 
-        for (int i = 0; i < gameField.length(); i++) {
-            if (gameField.charAt(i) != Figure.EMPTY.getName().charAt(0)) {
-                List<Integer> neighbours = getNeighbourIndices(i);
+        for (Integer filledIndex : FilledCellsTrackerUtil.getFilledCells()) {
+            List<Integer> neighbours = getNeighbourIndices(filledIndex);
 
-                for (Integer neighbour : neighbours) {
-                    if (!checkedIndices.contains(neighbour) && gameField.charAt(neighbour) == Figure.EMPTY.getName().charAt(0)) {
-                        StringBuilder newGameField = new StringBuilder(gameField);
-                        newGameField.setCharAt(neighbour, figure.getName().charAt(0));
-                        possibleMoves.add(newGameField.toString());
-                        checkedIndices.add(neighbour);
-                    }
+            for (Integer neighbour : neighbours) {
+                if (!checkedIndices.contains(neighbour) && gameField.charAt(neighbour) == Figure.EMPTY.getName().charAt(0)) {
+                    StringBuilder newGameField = new StringBuilder(gameField);
+                    newGameField.setCharAt(neighbour, figure.getName().charAt(0));
+                    possibleMoves.add(newGameField.toString());
+                    checkedIndices.add(neighbour);
                 }
             }
         }

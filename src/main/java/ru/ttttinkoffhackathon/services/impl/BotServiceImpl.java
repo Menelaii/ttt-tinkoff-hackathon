@@ -5,9 +5,7 @@ import ru.ttttinkoffhackathon.configuration.BotConfig;
 import ru.ttttinkoffhackathon.models.Figure;
 import ru.ttttinkoffhackathon.services.BotService;
 import ru.ttttinkoffhackathon.services.RegistrationService;
-import ru.ttttinkoffhackathon.util.MatrixStringUtil;
-import ru.ttttinkoffhackathon.util.MinimaxUtil;
-import ru.ttttinkoffhackathon.util.PossibleMovesGeneratorUtil;
+import ru.ttttinkoffhackathon.util.*;
 
 import java.util.List;
 
@@ -25,17 +23,18 @@ public class BotServiceImpl implements BotService {
         figure = registrationService.getFigure();
     }
 
-    //todo если не хватает ресурсов
+    //todo если не хватает ресурсов ...
     // регулировать depth относительно выставленных подряд фигур
-    // если можно проиграть/выиграть через 1 ход зачем просчитывать что будет через 5
-    // заготовки??
-    // записывать уже просчитанные ходы и если не укладываемся в секунду возвращать лучший что успели просчитать
-    // как регулировать depth??
     @Override
     public String makeTurnByGameField(String gameField) {
+        FilledCellsTrackerUtil.updateField(gameField);
+
+        if (FilledCellsTrackerUtil.getFilledCellsCount() == 0) {
+            return makeDefaultFirstTurn(gameField);
+        }
+
         List<String> possibleMoves = PossibleMovesGeneratorUtil.generatePossibleMoves(gameField, figure);
-        if (possibleMoves.isEmpty() && figure == Figure.CROSS) return makeDefaultFirstTurn(gameField);
-        else return makeMinimaxTurn(possibleMoves,3);
+        return makeMinimaxTurn(possibleMoves, MinimaxDepthUtil.determineDepth());
     }
 
     public String makeDefaultFirstTurn(String gameField) {
@@ -55,10 +54,6 @@ public class BotServiceImpl implements BotService {
                 bestScore = score;
                 bestMove = move;
             }
-        }
-
-        if (bestMove == null) {
-            throw new IllegalStateException("Нет доступных ходов");
         }
 
         return bestMove;
