@@ -12,7 +12,7 @@ public class MinimaxUtil {
 
     public static int minimax(String gameField, Figure ourFigure, int depth, int alpha, int beta, boolean isMaximizing) {
         if (depth == 0 || isGameOver(gameField)) {
-            return evaluate(gameField, ourFigure);
+            return evaluate(gameField, ourFigure, depth);
         }
 
         FilledCellsTrackerUtil.updateField(gameField);
@@ -46,7 +46,7 @@ public class MinimaxUtil {
         }
     }
 
-    public static int evaluate(String gameField, Figure ourFigure) {
+    public static int evaluate(String gameField, Figure ourFigure, int depth) {
         Map<String, Integer> cache = ourFigure == Figure.CROSS ? cacheX : cacheO;
 
         if (cache.containsKey(gameField)) {
@@ -61,15 +61,12 @@ public class MinimaxUtil {
         int score;
 
         if (weWon) {
-            score = 1;
+            score = 10 - depth;
         } else if (theyWon) {
-            score = -1;
+            score = -10 + depth;
         } else {
             score = 0;
         }
-
-        //todo
-        // result and depth
 
         cache.put(gameField, score);
 
@@ -81,12 +78,17 @@ public class MinimaxUtil {
     }
 
     public static boolean isGameOver(String gameField) {
+        if (isBoardFull(gameField)) {
+            return true;
+        }
+
         Figure[] figures = {Figure.CROSS, Figure.ZERO};
         for (Figure figure : figures) {
             if (WinCheckUtil.checkForWin(gameField, figure)) {
                 return true;
             }
         }
-        return isBoardFull(gameField);
+
+        return false;
     }
 }
