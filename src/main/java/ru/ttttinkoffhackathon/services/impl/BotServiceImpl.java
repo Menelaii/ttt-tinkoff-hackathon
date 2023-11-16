@@ -9,8 +9,10 @@ import ru.ttttinkoffhackathon.services.RegistrationService;
 import ru.ttttinkoffhackathon.util.*;
 
 import java.util.List;
+import java.util.concurrent.*;
 
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
+import static ru.ttttinkoffhackathon.util.Constants.SAFE_TIME_OUT;
 
 @Slf4j
 @Service
@@ -25,41 +27,56 @@ public class BotServiceImpl implements BotService {
         figure = registrationService.getFigure();
     }
 
-    //todo если не хватает ресурсов ...
-    // регулировать depth относительно выставленных подряд фигур
-    //todo подстраховка по времени
-    // сколько мс можно выделить на алгоритм??
     @Override
     public String makeTurnByGameField(String gameField) {
-        FilledCellsTrackerUtil.updateField(gameField);
+        FilledCellsTracker.update(gameField);
 
-        if (FilledCellsTrackerUtil.getFilledCellsCount() == 0) {
+        if (isFirstMove()) {
             return makeDefaultFirstTurn(gameField);
         }
 
-        List<String> possibleMoves = PossibleMovesGeneratorUtil.generatePossibleMoves(gameField, figure);
-        return makeMinimaxTurn(possibleMoves, MinimaxDepthUtil.determineDepth());
+        return makeMinimaxTurnWithTimeout(gameField, SAFE_TIME_OUT);
     }
 
-    public String makeDefaultFirstTurn(String gameField) {
+    private String makeDefaultFirstTurn(String gameField) {
         int centerIndex = MatrixStringUtil.coordinatesToIndex(FIELD_SIZE / 2, FIELD_SIZE / 2);
         StringBuilder newGameField = new StringBuilder(gameField);
         newGameField.setCharAt(centerIndex, figure.getName().charAt(0));
         return newGameField.toString();
     }
 
-    private String makeMinimaxTurn(List<String> possibleMoves, int depth) {
-        int bestScore = Integer.MIN_VALUE;
-        String bestMove = null;
+    private String makeMinimaxTurnWithTimeout(String gameField, long timeout) {
+        BestResultTracker.reset();
 
-        for (String move : possibleMoves) {
-            int score = MinimaxUtil.minimax(move, figure, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = move;
-            }
+        int depth = MinimaxDepthCalculator.determineDepth();
+        List<String> possibleMoves = PossibleMovesGenerator.generatePossibleMoves(gameField, figure);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<?> future = executor.submit(() ->
+                makeMinimaxTurn(possibleMoves, depth)
+        );
+
+        try {
+            future.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.toString());
+        } finally {
+            executor.shutdownNow();
         }
 
-        return bestMove;
+        return BestResultTracker.getBestMove();
+    }
+
+    private void makeMinimaxTurn(List<String> possibleMoves, int depth) {
+        for (String move : possibleMoves) {
+            int score = MinimaxImpl.minimax(move, figure, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+            BestResultTracker.tryUpdateBestMove(score, move);
+        }
+    }
+
+    private boolean isFirstMove() {
+        return FilledCellsTracker.getFilledCellsCount() == 0;
     }
 }

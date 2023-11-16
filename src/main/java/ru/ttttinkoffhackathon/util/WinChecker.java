@@ -8,7 +8,7 @@ import java.util.Map;
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
 import static ru.ttttinkoffhackathon.util.Constants.FIGURES_FOR_WIN;
 
-public class WinCheckUtil {
+public class WinChecker {
 
     private static final Map<String, Boolean> cacheX = new HashMap<>();
     private static final Map<String, Boolean> cacheO = new HashMap<>();

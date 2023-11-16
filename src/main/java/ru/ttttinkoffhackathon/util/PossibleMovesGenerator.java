@@ -7,19 +7,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static ru.ttttinkoffhackathon.util.Constants.EMPTY_CELL;
 import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
 
-public class PossibleMovesGeneratorUtil {
+public class PossibleMovesGenerator {
 
     public static List<String> generatePossibleMoves(String gameField, Figure figure) {
         List<String> possibleMoves = new ArrayList<>();
         Set<Integer> checkedIndices = new HashSet<>();
 
-        for (Integer filledIndex : FilledCellsTrackerUtil.getFilledCells()) {
+        for (Integer filledIndex : FilledCellsTracker.getFilledCells()) {
             List<Integer> neighbours = getNeighbourIndices(filledIndex);
 
             for (Integer neighbour : neighbours) {
-                if (!checkedIndices.contains(neighbour) && gameField.charAt(neighbour) == Figure.EMPTY.getName().charAt(0)) {
+                if (!checkedIndices.contains(neighbour) && gameField.charAt(neighbour) == EMPTY_CELL) {
                     StringBuilder newGameField = new StringBuilder(gameField);
                     newGameField.setCharAt(neighbour, figure.getName().charAt(0));
                     possibleMoves.add(newGameField.toString());

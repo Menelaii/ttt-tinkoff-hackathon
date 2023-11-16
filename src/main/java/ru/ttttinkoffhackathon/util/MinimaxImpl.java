@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MinimaxUtil {
+public class MinimaxImpl {
     private static final Map<String, Integer> cacheO = new HashMap<>();
     private static final Map<String, Integer> cacheX = new HashMap<>();
 
@@ -15,8 +15,8 @@ public class MinimaxUtil {
             return evaluate(gameField, ourFigure, depth);
         }
 
-        FilledCellsTrackerUtil.updateField(gameField);
-        List<String> possibleMoves = PossibleMovesGeneratorUtil.generatePossibleMoves(
+        FilledCellsTracker.update(gameField);
+        List<String> possibleMoves = PossibleMovesGenerator.generatePossibleMoves(
                 gameField,
                 isMaximizing ? ourFigure : Figure.getOppositeFigure(ourFigure)
         );
@@ -55,8 +55,8 @@ public class MinimaxUtil {
 
         Figure opponentFigure = Figure.getOppositeFigure(ourFigure);
 
-        boolean weWon = WinCheckUtil.checkForWin(gameField, ourFigure);
-        boolean theyWon = WinCheckUtil.checkForWin(gameField, opponentFigure);
+        boolean weWon = WinChecker.checkForWin(gameField, ourFigure);
+        boolean theyWon = WinChecker.checkForWin(gameField, opponentFigure);
 
         int score;
         if (weWon) {
@@ -83,7 +83,7 @@ public class MinimaxUtil {
 
         Figure[] figures = {Figure.CROSS, Figure.ZERO};
         for (Figure figure : figures) {
-            if (WinCheckUtil.checkForWin(gameField, figure)) {
+            if (WinChecker.checkForWin(gameField, figure)) {
                 return true;
             }
         }

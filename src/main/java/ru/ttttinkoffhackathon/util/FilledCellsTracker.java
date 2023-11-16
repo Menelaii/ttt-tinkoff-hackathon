@@ -1,19 +1,16 @@
 package ru.ttttinkoffhackathon.util;
 
-import lombok.Getter;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import static ru.ttttinkoffhackathon.util.Constants.EMPTY_CELL;
 
-public class FilledCellsTrackerUtil {
-    private static final int BOARD_SIZE = 361;
+public class FilledCellsTracker {
     private static final Set<Integer> filledCells = new HashSet<>();
 
     private static int filledCellsCount = 0;
 
-    public static void updateField(String gameField) {
+    public static void update(String gameField) {
         filledCells.clear();
         filledCellsCount = 0;
         for (int i = 0; i < gameField.length(); i++) {
