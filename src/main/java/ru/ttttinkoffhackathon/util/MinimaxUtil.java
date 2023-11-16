@@ -2,9 +2,13 @@ package ru.ttttinkoffhackathon.util;
 
 import ru.ttttinkoffhackathon.models.Figure;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MinimaxUtil {
+    private static final Map<String, Integer> cacheO = new HashMap<>();
+    private static final Map<String, Integer> cacheX = new HashMap<>();
 
     public static int minimax(String gameField, Figure ourFigure, int depth, int alpha, int beta, boolean isMaximizing) {
         if (depth == 0 || isGameOver(gameField)) {
@@ -43,20 +47,33 @@ public class MinimaxUtil {
     }
 
     public static int evaluate(String gameField, Figure ourFigure) {
+        Map<String, Integer> cache = ourFigure == Figure.CROSS ? cacheX : cacheO;
+
+        if (cache.containsKey(gameField)) {
+            return cache.get(gameField);
+        }
+
         Figure opponentFigure = Figure.getOppositeFigure(ourFigure);
 
         boolean weWon = WinCheckUtil.checkForWin(gameField, ourFigure);
         boolean theyWon = WinCheckUtil.checkForWin(gameField, opponentFigure);
 
+        int score;
+
         if (weWon) {
-            return 1;
+            score = 1;
         } else if (theyWon) {
-            return -1;
-        } else if (isBoardFull(gameField)) {
-            return 0;
+            score = -1;
         } else {
-            return 0;
+            score = 0;
         }
+
+        //todo
+        // result and depth
+
+        cache.put(gameField, score);
+
+        return score;
     }
 
     private static boolean isBoardFull(String gameField) {
