@@ -9,15 +9,15 @@ public class BestResultTracker {
             bestScore = score;
             bestMove = move;
         }
+
+        //todo
+        System.out.println("возможный ход с рейтингом: " + score);
+        System.out.println(MatrixStringUtil.formatField(move));
     }
 
     public static synchronized void reset() {
         bestScore = Integer.MIN_VALUE;
         bestMove = null;
-    }
-
-    public static synchronized int getBestScore() {
-        return bestScore;
     }
 
     public static synchronized String getBestMove() {

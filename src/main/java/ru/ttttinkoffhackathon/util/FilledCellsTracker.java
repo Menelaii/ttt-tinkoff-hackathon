@@ -10,6 +10,7 @@ public class FilledCellsTracker {
 
     private static int filledCellsCount = 0;
 
+    //todo попробовать кэш
     public static void update(String gameField) {
         filledCells.clear();
         filledCellsCount = 0;

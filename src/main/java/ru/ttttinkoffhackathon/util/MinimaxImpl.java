@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ru.ttttinkoffhackathon.util.Constants.FIGURES_FOR_WIN;
+
 public class MinimaxImpl {
     private static final Map<String, Integer> cacheO = new HashMap<>();
     private static final Map<String, Integer> cacheX = new HashMap<>();
@@ -71,6 +73,26 @@ public class MinimaxImpl {
 
         return score;
     }
+
+    private static int evaluatePotentialWinLoss(String gameField, Figure ourFigure) {
+        int score = 0;
+
+        int ourMaxInRow = FiguresInRowCounter.maxInRow(gameField, ourFigure);
+        int opponentMaxInRow = FiguresInRowCounter.maxInRow(gameField, Figure.getOppositeFigure(ourFigure));
+
+        if (ourMaxInRow == FIGURES_FOR_WIN) {
+            score += 100; // Сильный бонус за потенциальную победу
+        } else if (opponentMaxInRow == Integer.MAX_VALUE) {
+            score -= 100; // Сильный штраф за потенциальную угрозу поражения
+        } else {
+            // Взвешивание на основе количества фигур подряд
+            score += ourMaxInRow * 10;
+            score -= opponentMaxInRow * 10;
+        }
+
+        return score;
+    }
+
 
     private static boolean isBoardFull(String gameField) {
         return !gameField.contains("_");
