@@ -5,8 +5,7 @@ import ru.ttttinkoffhackathon.models.Figure;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.ttttinkoffhackathon.util.Constants.FIELD_SIZE;
-import static ru.ttttinkoffhackathon.util.Constants.FIGURES_FOR_WIN;
+import static ru.ttttinkoffhackathon.util.Constants.*;
 
 public class FiguresInRowCounter {
 
@@ -40,7 +39,16 @@ public class FiguresInRowCounter {
             for (int col = 0; col < FIELD_SIZE; col++) {
                 if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row, col)) == figure) {
                     count++;
-                    if (count == FIGURES_FOR_WIN) return FIGURES_FOR_WIN;
+                    if (count == FIGURES_FOR_WIN) {
+                        return FIGURES_FOR_WIN;
+                    }
+
+                    if (count == FIGURES_FOR_WIN - 1) {
+                        if (col + 1 < FIELD_SIZE) {
+                            char next = gameField.charAt(MatrixStringUtil.coordinatesToIndex(row, col + 1));
+                            DangerTracker.updateIfInDanger(next == EMPTY_CELL);
+                        }
+                    }
                 } else {
                     maxInRow = Math.max(maxInRow, count);
                     count = 0;
@@ -64,6 +72,13 @@ public class FiguresInRowCounter {
                     if (++count == FIGURES_FOR_WIN) {
                         return FIGURES_FOR_WIN;
                     }
+
+                    if (count == FIGURES_FOR_WIN - 1) {
+                        if (row + 1 < FIELD_SIZE) {
+                            char next = gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + 1, col));
+                            DangerTracker.updateIfInDanger(next == EMPTY_CELL);
+                        }
+                    }
                 } else {
                     maxInRow = Math.max(maxInRow, count);
                     count = 0;
@@ -77,16 +92,23 @@ public class FiguresInRowCounter {
         return maxInRow;
     }
 
-    private static int maxInRowDiagonally(String gameField, char figureSymbol) {
+    private static int maxInRowDiagonally(String gameField, char figure) {
         int maxInRow = 0;
         int count;
         for (int row = 0; row < FIELD_SIZE; row++) {
             for (int col = 0; col < FIELD_SIZE; col++) {
                 count = 0;
                 for (int i = 0; i < FIGURES_FOR_WIN; i++) {
-                    if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i, col + i)) == figureSymbol) {
+                    if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i, col + i)) == figure) {
                         if (++count == FIGURES_FOR_WIN) {
                             return FIGURES_FOR_WIN;
+                        }
+
+                        if (count == FIGURES_FOR_WIN - 1) {
+                            if (row + i + 1 < FIELD_SIZE && col + i + 1 < FIELD_SIZE) {
+                                char next = gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i + 1, col + i + 1));
+                                DangerTracker.updateIfInDanger(next == EMPTY_CELL);
+                            }
                         }
                     } else {
                         maxInRow = Math.max(maxInRow, count);
@@ -100,9 +122,16 @@ public class FiguresInRowCounter {
             for (int col = FIGURES_FOR_WIN - 1; col < FIELD_SIZE; col++) {
                 count = 0;
                 for (int i = 0; i < FIGURES_FOR_WIN; i++) {
-                    if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i, col - i)) == figureSymbol) {
+                    if (gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i, col - i)) == figure) {
                         if (++count == FIGURES_FOR_WIN) {
                             return FIGURES_FOR_WIN;
+                        }
+
+                        if (count == FIGURES_FOR_WIN - 1) {
+                            if (row + i + 1 < FIELD_SIZE && col - i - 1 >= 0) {
+                                char next = gameField.charAt(MatrixStringUtil.coordinatesToIndex(row + i + 1, col - i - 1));
+                                DangerTracker.updateIfInDanger(next == EMPTY_CELL);
+                            }
                         }
                     } else {
                         maxInRow = Math.max(maxInRow, count);

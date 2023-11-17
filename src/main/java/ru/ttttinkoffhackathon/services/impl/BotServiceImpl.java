@@ -49,8 +49,6 @@ public class BotServiceImpl implements BotService {
         BestResultTracker.reset();
 
         int depth = MinimaxDepthCalculator.determineDepth();
-        //todo
-        log.info("глубина ============= " + depth);
         List<String> possibleMoves = PossibleMovesGenerator.generatePossibleMoves(gameField, figure);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -62,10 +60,7 @@ public class BotServiceImpl implements BotService {
             future.get(timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
-            //todo
-            log.info("превышен лимит по времени");
         } catch (InterruptedException | ExecutionException e) {
-            //todo
             log.error(e.toString());
         } finally {
             executor.shutdownNow();

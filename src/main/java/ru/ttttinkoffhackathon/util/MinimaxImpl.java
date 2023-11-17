@@ -55,44 +55,43 @@ public class MinimaxImpl {
             return cache.get(gameField);
         }
 
-        Figure opponentFigure = Figure.getOppositeFigure(ourFigure);
 
-        boolean weWon = WinChecker.checkForWin(gameField, ourFigure);
-        boolean theyWon = WinChecker.checkForWin(gameField, opponentFigure);
+        int ourMaxInRow = FiguresInRowCounter.maxInRow(gameField, ourFigure);
+        int opponentMaxInRow = FiguresInRowCounter.maxInRow(gameField, Figure.getOppositeFigure(ourFigure));
 
-        int score;
-        if (weWon) {
-            score = 10 + depth;
-        } else if (theyWon) {
-            score = -10 - depth;
+        // todo если тестить отдельно то работает, здесь же - нет
+//        DangerTracker.reset();
+//        boolean isMyAssInDanger = DangerTracker.getIsMyAssInDanger();
+
+        int score = 0;
+
+        if (ourMaxInRow == FIGURES_FOR_WIN - 1) {
+            if (opponentMaxInRow == FIGURES_FOR_WIN - 1) {
+                score -= 10;
+            }
+        }
+
+
+        if (ourMaxInRow == FIGURES_FOR_WIN) {
+            score += 100 + depth;
+
+//            if (isMyAssInDanger) {
+//                score -= depth + 1;
+//            }
+        } else if (opponentMaxInRow == FIGURES_FOR_WIN || opponentMaxInRow == FIGURES_FOR_WIN - 1) {
+            score += -100 - depth;
         } else {
-            score = 0;
+            if (opponentMaxInRow < ourMaxInRow) {
+                score += (ourMaxInRow * 15) - (opponentMaxInRow * 10);
+            } else {
+                score += (ourMaxInRow * 10) - (opponentMaxInRow * 15);
+            }
         }
 
         cache.put(gameField, score);
 
         return score;
     }
-
-    private static int evaluatePotentialWinLoss(String gameField, Figure ourFigure) {
-        int score = 0;
-
-        int ourMaxInRow = FiguresInRowCounter.maxInRow(gameField, ourFigure);
-        int opponentMaxInRow = FiguresInRowCounter.maxInRow(gameField, Figure.getOppositeFigure(ourFigure));
-
-        if (ourMaxInRow == FIGURES_FOR_WIN) {
-            score += 100; // Сильный бонус за потенциальную победу
-        } else if (opponentMaxInRow == Integer.MAX_VALUE) {
-            score -= 100; // Сильный штраф за потенциальную угрозу поражения
-        } else {
-            // Взвешивание на основе количества фигур подряд
-            score += ourMaxInRow * 10;
-            score -= opponentMaxInRow * 10;
-        }
-
-        return score;
-    }
-
 
     private static boolean isBoardFull(String gameField) {
         return !gameField.contains("_");
@@ -105,7 +104,7 @@ public class MinimaxImpl {
 
         Figure[] figures = {Figure.CROSS, Figure.ZERO};
         for (Figure figure : figures) {
-            if (WinChecker.checkForWin(gameField, figure)) {
+            if (FiguresInRowCounter.maxInRow(gameField, figure) == FIGURES_FOR_WIN) {
                 return true;
             }
         }

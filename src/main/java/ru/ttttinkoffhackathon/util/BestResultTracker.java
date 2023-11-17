@@ -9,10 +9,6 @@ public class BestResultTracker {
             bestScore = score;
             bestMove = move;
         }
-
-        //todo
-        System.out.println("возможный ход с рейтингом: " + score);
-        System.out.println(MatrixStringUtil.formatField(move));
     }
 
     public static synchronized void reset() {

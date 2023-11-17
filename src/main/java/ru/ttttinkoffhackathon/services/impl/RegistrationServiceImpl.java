@@ -27,45 +27,45 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final RestTemplate restTemplate;
     private final BotConfig botConfig;
 
-    private Figure figure = Figure.CROSS;
+    private Figure figure;
 
-//    @PostConstruct
-//    public void init() {
-//        String botUrl = botConfig.botUrl();
-//        String botId = botConfig.botId();
-//        UUID sessionUUID = botConfig.sessionUUID();
-//        log.info("Попытка зарегистрировать бота {} с url {} в сессии {}", botId, botUrl, sessionUUID);
-//
-//        log.debug("Отправляем запрос для регистрации бота в сессии");
-//        final var uri = UriComponentsBuilder
-//                .fromUriString("{basePath}/sessions/{sessionId}/registration")
-//                .buildAndExpand(Map.of(
-//                        "basePath", botConfig.mediatorAddress(),
-//                        "sessionId", sessionUUID
-//                ))
-//                .encode()
-//                .toUri();
-//        final var body = RegistrationRequestDTO.builder()
-//                .botUrl(botUrl)
-//                .botId(botId)
-//                .password(botConfig.botPassword())
-//                .build();
-//        ResponseEntity<RegistrationResponseDTO> response = restTemplate.exchange(
-//                uri,
-//                HttpMethod.POST,
-//                new HttpEntity<>(body),
-//                RegistrationResponseDTO.class
-//        );
-//
-//        log.debug("Ответ получен {}", response);
-//        if (response.getStatusCode() != HttpStatus.OK) {
-//            throw new RegistrationException();
-//        }
-//
-//        this.figure = response.getBody().figure();
-//        log.debug("Бот успешно зарегистрирован в сессии {}", sessionUUID);
-//        log.info("Успешно зарегистрирован. Буду ходить фигурой {}", figure);
-//    }
+    @PostConstruct
+    public void init() {
+        String botUrl = botConfig.botUrl();
+        String botId = botConfig.botId();
+        UUID sessionUUID = botConfig.sessionUUID();
+        log.info("Попытка зарегистрировать бота {} с url {} в сессии {}", botId, botUrl, sessionUUID);
+
+        log.debug("Отправляем запрос для регистрации бота в сессии");
+        final var uri = UriComponentsBuilder
+                .fromUriString("{basePath}/sessions/{sessionId}/registration")
+                .buildAndExpand(Map.of(
+                        "basePath", botConfig.mediatorAddress(),
+                        "sessionId", sessionUUID
+                ))
+                .encode()
+                .toUri();
+        final var body = RegistrationRequestDTO.builder()
+                .botUrl(botUrl)
+                .botId(botId)
+                .password(botConfig.botPassword())
+                .build();
+        ResponseEntity<RegistrationResponseDTO> response = restTemplate.exchange(
+                uri,
+                HttpMethod.POST,
+                new HttpEntity<>(body),
+                RegistrationResponseDTO.class
+        );
+
+        log.debug("Ответ получен {}", response);
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new RegistrationException();
+        }
+
+        this.figure = response.getBody().figure();
+        log.debug("Бот успешно зарегистрирован в сессии {}", sessionUUID);
+        log.info("Успешно зарегистрирован. Буду ходить фигурой {}", figure);
+    }
 
     @Override
     public Figure getFigure() {
